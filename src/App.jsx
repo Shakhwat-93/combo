@@ -252,10 +252,10 @@ function HeroSection({ onPickAndOrder }) {
             {/* Season Stamp Overlapping Top-Left */}
             <SeasonStampBadge line1="নতুন মৌসুমে" line2="শীত ১৪৩১" />
 
-            {/* Main Subject Photo — Flagship 1180 Combo */}
+            {/* Main Subject Photo — Featured 990 Combo */}
             <img
-              src={BRAND_IMAGES.combo1180}
-              alt="মাত্র ১১৮০ টাকায় ৩.৫ কেজি খাঁটি খেজুরের গুড়ের বিশেষ কম্বো"
+              src={BRAND_IMAGES.combo990}
+              alt="মাত্র ৯৯০ টাকায় ৫ ধরনের খাঁটি খেজুরের গুড়ের বিশেষ কম্বো"
               className="hero-subject-img"
               loading="eager"
               fetchpriority="high"
@@ -265,8 +265,8 @@ function HeroSection({ onPickAndOrder }) {
           {/* Hero Bottom Joined Bar */}
           <div className="hero-bottom-bar">
             <div className="hero-bar-info">
-              <strong>ক্যাশ অন ডেলিভারি · ফ্রি হোম ডেলিভারি</strong>
-              <small>সব কম্বো প্যাকেজে ডেলিভারি চার্জ সম্পূর্ণ ফ্রি · {DELIVERY_START_NOTICE}</small>
+              <strong>মাত্র ৯৯০ টাকায় ৫ ধরনের গুড় · ফ্রি ডেলিভারি</strong>
+              <small>সারা বাংলাদেশে ক্যাশ অন ডেলিভারি · {DELIVERY_START_NOTICE}</small>
             </div>
             <button
               type="button"

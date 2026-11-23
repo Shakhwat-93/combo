@@ -19,8 +19,8 @@
   --white: #FFFFFF;
 
   /* Typography */
-  --font-display: 'Galada', 'Hind Siliguri', cursive;    /* Bengali calligraphy headings */
-  --font-body: 'Hind Siliguri', 'Noto Sans Bengali', system-ui, sans-serif;
+  --font-display: 'Galada', 'Noto Sans Bengali', cursive;    /* Bengali calligraphy headings */
+  --font-body: 'Noto Sans Bengali', 'Hind Siliguri', system-ui, sans-serif;
   --font-latin-small: 'Inter', system-ui, sans-serif;     /* tiny English sub-labels */
 
   /* Radius & Shadows */
