@@ -10,7 +10,6 @@ export const WHATSAPP_E164 = '8801318007554'
 
 export const BRAND_IMAGES = {
   logo: '/img/file_00000000bb8c8208935485c59b7b5c83.png',
-  combo1180: '/img/combo-1180.jpg',
   combo990: '/img/combo-990.jpg',
   makerStory: '/img/file_00000000ba2c8208b0aa4b8c2b4fc3c3.png',
   craftVideo: '/img/lv_0_20261109191525.mp4',
@@ -19,27 +18,6 @@ export const BRAND_IMAGES = {
 
 export const combos = [
   {
-    id: 'gur-combo-1180',
-    title: 'মাত্র ১১৮০ টাকায় ৩.৫ কেজি খাঁটি খেজুরের গুড়!',
-    shortTitle: '৩.৫ কেজি স্পেশাল কম্বো (৫০০ গ্রাম ঝোলা ফ্রি)',
-    priceLabel: '১১৮০ কম্বো',
-    price: 1180,
-    totalWeight: '৩.৫ কেজি',
-    freeDelivery: true,
-    featured: true,
-    badge: '🔥 সেরা ডিল · ৫০০ গ্রাম ফ্রি',
-    deliveryText: 'সারা বাংলাদেশে হোম ডেলিভারি সম্পূর্ণ ফ্রি!',
-    items: [
-      { text: '১ কেজি গোল পাটালি', isFree: false },
-      { text: '১ কেজি ফয়েল পাটালি', isFree: false },
-      { text: '১ কেজি দানাদার গুড়', isFree: false },
-      { text: '৫০০ গ্রাম ঝোলা গুড় ফ্রি!', isFree: true },
-    ],
-    image: '/img/combo-1180.jpg',
-    hasImage: true,
-    pos: 'center center',
-  },
-  {
     id: 'gur-combo-990',
     title: 'মাত্র ৯৯০ টাকায় ৫ ধরনের খাঁটি খেজুরের গুড়',
     shortTitle: '৫ ধরনের গুড়ের বিশেষ কম্বো (২.৫ কেজি)',
@@ -47,7 +25,7 @@ export const combos = [
     price: 990,
     totalWeight: '২.৫ কেজি',
     freeDelivery: true,
-    featured: false,
+    featured: true,
     badge: '🪔 বেস্ট সেলার · ৫ স্বাদ',
     deliveryText: 'হোম ডেলিভারি চার্জ একেবারেই ফ্রি!',
     items: [
@@ -61,28 +39,9 @@ export const combos = [
     hasImage: true,
     pos: 'center center',
   },
-  {
-    id: 'gur-combo-1110',
-    title: 'মাত্র ১১১০ টাকা! ৩ কেজি ঝোলা গুড়ের সাথে ৫০০ গ্রাম গোল পাটালি ফ্রি!',
-    shortTitle: '৩ কেজি ঝোলা গুড় + ৫০০ গ্রাম গোল পাটালি ফ্রি',
-    priceLabel: '১১১০ কম্বো',
-    price: 1110,
-    totalWeight: '৩.৫ কেজি',
-    freeDelivery: true,
-    featured: false,
-    badge: '🍯 ঝোলা স্পেশাল · ৫০০ গ্রাম ফ্রি',
-    deliveryText: 'সারা বাংলাদেশ হোম ডেলিভারি চার্জ সম্পূর্ণ ফ্রি!',
-    items: [
-      { text: '৩ কেজি খাঁটি ঝোলা গুড়', isFree: false },
-      { text: '৫০০ গ্রাম গোল পাটালি গুড় ফ্রি', isFree: true },
-    ],
-    image: null,
-    hasImage: false,
-    pos: 'center center',
-  },
 ]
 
-// পুরোনো লুজ প্রোডাক্ট সরানো হয়েছে — এই পেজে শুধু উপরের ৩টি কম্বো প্যাকেজ থাকবে
+// এই পেজে শুধু ৯৯০ টাকার বিশেষ কম্বো প্যাকেজটি থাকবে
 export const gurPrices = []
 
 export const craftSteps = [

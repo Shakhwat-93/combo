@@ -355,7 +355,7 @@ function MenuIntroSection({ onPickAndOrder, onOpenVideoModal }) {
         <div className="sec-header">
           <h2 className="sec-title">আজকের কম্বো মেনু</h2>
           <p className="sec-subtitle">
-            ৩টি বিশেষ খাঁটি খেজুর গুড়ের কম্বো প্যাকেজ — প্রতিটি প্যাকেজেই সারা বাংলাদেশে হোম ডেলিভারি সম্পূর্ণ ফ্রি!
+            মাত্র ৯৯০ টাকায় ৫ ধরনের খাঁটি খেজুর গুড়ের বিশেষ কম্বো — সারা বাংলাদেশে হোম ডেলিভারি সম্পূর্ণ ফ্রি!
           </p>
         </div>
 
@@ -456,9 +456,9 @@ function ProductGridSection({ onPickAndOrder }) {
     <section className="product-grid-section" id="products" ref={gridSecRef}>
       <div className="container">
         <div className="sec-header">
-          <h2 className="sec-title">বিশেষ কম্বো প্যাকেজসমূহ</h2>
+          <h2 className="sec-title">বিশেষ কম্বো প্যাকেজ</h2>
           <p className="sec-subtitle">
-            আমাদের ৩টি জনপ্রিয় খাঁটি খেজুর গুড়ের কম্বো — প্রতিটি প্যাকেজেই সারা বাংলাদেশে হোম ডেলিভারি সম্পূর্ণ ফ্রি!
+            আমাদের জনপ্রিয় ৫ ধরনের খাঁটি খেজুর গুড়ের কম্বো — সারা বাংলাদেশে হোম ডেলিভারি সম্পূর্ণ ফ্রি!
           </p>
         </div>
 
@@ -1423,8 +1423,8 @@ function VideoModal({ isOpen, onClose }) {
    ========================================================================== */
 function Storefront({ onOpenAdmin, onOrderSuccess }) {
   const { siteSettings } = useCms() || {}
-  const [selected, setSelected] = useState({ 'gur-combo-1180': 1 })
-  const [activePreviewId, setActivePreviewId] = useState('gur-combo-1180')
+  const [selected, setSelected] = useState({ 'gur-combo-990': 1 })
+  const [activePreviewId, setActivePreviewId] = useState('gur-combo-990')
   const [stickyVisible, setStickyVisible] = useState(false)
   const [videoModalOpen, setVideoModalOpen] = useState(false)
   const lastCheckoutSigRef = useRef('')
@@ -1656,8 +1656,8 @@ function Storefront({ onOpenAdmin, onOrderSuccess }) {
           onUpdateQty={updateQty}
           onResetCart={() => {
             lastCheckoutSigRef.current = ''
-            setSelected({ 'gur-combo-1180': 1 })
-            setActivePreviewId('gur-combo-1180')
+            setSelected({ 'gur-combo-990': 1 })
+            setActivePreviewId('gur-combo-990')
           }}
           onBeginCheckout={() => fireBeginCheckout(selected)}
           onOrderSuccess={onOrderSuccess}

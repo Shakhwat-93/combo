@@ -781,11 +781,14 @@ input, textarea, select {
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
+  max-width: 460px;
+  margin-inline: auto;
 }
 
 @media (min-width: 820px) {
   .combo-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr;
+    max-width: 480px;
     gap: 18px;
     align-items: stretch;
   }
