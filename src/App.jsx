@@ -20,7 +20,6 @@ import {
 import {
   BRAND_IMAGES,
   DELIVERY_CHARGE,
-  DELIVERY_START_NOTICE,
   FREE_BONUS_MIN_KG,
   FREE_BONUS_ITEM_NAME,
   MAX_LOOSE_KG_PER_ITEM,
@@ -83,7 +82,7 @@ function HeritageHeader({ totalItems, grandTotal, onOpenCheckout, siteSettings }
   return (
     <>
       <div className="top-notice-strip">
-        📦 {DELIVERY_START_NOTICE} · সারা বাংলাদেশে ক্যাশ অন ডেলিভারি
+        📦 সারা বাংলাদেশে ফ্রি হোম ডেলিভারি ও ক্যাশ অন ডেলিভারি
       </div>
       <header className="heritage-header">
         <div className="container heritage-header-inner">
@@ -266,7 +265,7 @@ function HeroSection({ onPickAndOrder }) {
           <div className="hero-bottom-bar">
             <div className="hero-bar-info">
               <strong>মাত্র ৯৯০ টাকায় ৫ ধরনের গুড় · ফ্রি ডেলিভারি</strong>
-              <small>সারা বাংলাদেশে ক্যাশ অন ডেলিভারি · {DELIVERY_START_NOTICE}</small>
+              <small>সারা বাংলাদেশে ক্যাশ অন ডেলিভারি · পণ্য হাতে পেয়ে টাকা পরিশোধ</small>
             </div>
             <button
               type="button"
@@ -623,7 +622,7 @@ function DeliveryPromiseSection() {
             <span className="bubble-pill-top">১-৩ দিনে ডেলিভারি</span>
             <h3 className="bubble-heading">আপনার দরজায়</h3>
             <p className="bubble-desc">
-              সারা বাংলাদেশে দ্রুততম সময়ে ক্যাশ অন ডেলিভারি · {DELIVERY_START_NOTICE} · পার্সেল খুলে যাচাই করে তারপর টাকা পরিশোধ করুন।
+              সারা বাংলাদেশে দ্রুততম সময়ে ক্যাশ অন ডেলিভারি · পার্সেল খুলে যাচাই করে তারপর টাকা পরিশোধ করুন।
             </p>
           </div>
 
@@ -889,7 +888,7 @@ function OrderMemoSection({
         <div className="sec-header">
           <h2 className="sec-title">অর্ডার করুন</h2>
           <p className="sec-subtitle">
-            ক্যাশ অন ডেলিভারি · {DELIVERY_START_NOTICE} · পণ্য হাতে পেয়ে টাকা পরিশোধ
+            ক্যাশ অন ডেলিভারি · ফ্রি হোম ডেলিভারি · পণ্য হাতে পেয়ে টাকা পরিশোধ
           </p>
         </div>
 
@@ -1246,7 +1245,7 @@ function HeritageFooter({ onOpenAdmin, siteSettings }) {
         <div className="footer-slogan-wrap">
           <h3 className="footer-slogan">গ্রীষ্মে আম, শীতে গুড়।</h3>
           <p className="footer-slogan-sub">
-            ১০০% খাঁটি খেজুরের গুড় · {DELIVERY_START_NOTICE}
+            ১০০% খাঁটি খেজুরের গুড় · সারা বাংলাদেশে ফ্রি হোম ডেলিভারি
           </p>
         </div>
 

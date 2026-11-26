@@ -1,6 +1,5 @@
 // ম্যাংগো গার্ডেন — খাঁটি খেজুরের গুড়ের বিশেষ কম্বো প্যাকেজ ও বাস্তব রিভিউ
 export const DELIVERY_CHARGE = 0
-export const DELIVERY_START_NOTICE = '১৫ নভেম্বর থেকে ডেলিভারি শুরু, ইনশাআল্লাহ'
 export const FREE_BONUS_MIN_KG = 3
 export const FREE_BONUS_ITEM_NAME = '৫০০ গ্রাম ঝোলা গুড় (ফ্রি অফার)'
 export const MAX_LOOSE_KG_PER_ITEM = 5
@@ -62,8 +61,8 @@ export const craftSteps = [
   },
   {
     step: '০৪',
-    title: '১৫ নভেম্বর ডেলিভারি',
-    desc: '১৫ নভেম্বর থেকে সিরিয়াল অনুযায়ী সারা বাংলাদেশে ক্যাশ অন ডেলিভারি শুরু, ইনশাআল্লাহ।',
+    title: 'দ্রুত হোম ডেলিভারি',
+    desc: 'সারা বাংলাদেশে ফ্রি হোম ডেলিভারি ও ক্যাশ অন ডেলিভারি সুবিধা।',
   },
 ]
 
