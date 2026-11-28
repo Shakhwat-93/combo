@@ -78,10 +78,26 @@ export function markOrderTracked(orderId) {
   }
 }
 
-// --- Standard Meta Pixel Loader Stub ---
-// Ensures official window.fbq queue is always available without breaking fbevents.js
-export function ensureStandardFbqStub() {
+// Helper: detect whether Google Tag Manager is present/active on the page.
+// When GTM is active, GTM owns browser-side Meta Pixel tags (PageView, InitiateCheckout, Purchase, etc.)
+// via window.dataLayer, so direct window.fbq() calls are skipped to prevent duplicate browser events.
+function isGtmActiveOnPage() {
+  if (typeof window === 'undefined') return false;
+  const hasGtmScript =
+    typeof document !== 'undefined' &&
+    Boolean(document.querySelector('script[src*="googletagmanager.com/gtm.js"]'));
+  const hasGtmRuntime = Boolean(
+    window.google_tag_manager &&
+      (window.google_tag_manager['GTM-MKND7838'] ||
+        Object.keys(window.google_tag_manager).length > 0)
+  );
+  return Boolean(hasGtmScript || hasGtmRuntime || window.__gtm_loaded);
+}
+
+// --- Standard Meta Pixel Loader Stub (only used when GTM is NOT managing Meta Pixel) ---
+export function ensureStandardFbqStub(pixelId) {
   if (typeof window === 'undefined') return;
+  if (isGtmActiveOnPage()) return;
 
   if (!window.fbq) {
     /* eslint-disable */
@@ -106,15 +122,10 @@ export function ensureStandardFbqStub() {
 
   // Disable automatic button click & heuristic DOM scraping to eliminate duplicate phantom events
   try {
-    if (window.fbq) {
-      window.fbq('set', 'autoConfig', false, '1033673513094948');
+    if (window.fbq && pixelId) {
+      window.fbq('set', 'autoConfig', false, pixelId);
     }
   } catch (e) {}
-}
-
-// Automatically ensure standard stub on client
-if (typeof window !== 'undefined') {
-  ensureStandardFbqStub();
 }
 
 // 1. INITIALIZE TRACKERS ON PAGE LOAD (Strictly Idempotent)
@@ -135,39 +146,46 @@ export function initTracking(siteSettings) {
     return;
   }
 
-  // --- A. Facebook / Meta Pixel Initialization ---
-  if (fbPixelId) {
-    window.__fb_initialized_pixel_ids = window.__fb_initialized_pixel_ids || new Set();
+  // --- C. Google Tag Manager Detection / Initialization (check FIRST so Meta Pixel doesn't double-fire) ---
+  const hasGtmScript = typeof document !== 'undefined' && Boolean(
+    document.querySelector('script[src*="googletagmanager.com/gtm.js"]') || window.__gtm_loaded
+  );
 
-    if (!window.fbq) {
-      /* eslint-disable */
-      (function (f, b, e, v, n, t, s) {
-        if (f.fbq) return;
-        n = f.fbq = function () {
-          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
-        };
-        if (!f._fbq) f._fbq = n;
-        n.push = n;
-        n.loaded = !0;
-        n.version = '2.0';
-        n.queue = [];
-        t = b.createElement(e);
-        t.async = !0;
-        t.src = v;
-        s = b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t, s);
-      })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
-      /* eslint-enable */
-    }
+  if (gtmId && !hasGtmScript) {
+    /* eslint-disable */
+    (function (w, d, s, l, i) {
+      w[l] = w[l] || [];
+      w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+      var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s),
+        dl = l != 'dataLayer' ? '&l=' + l : '';
+      j.async = true;
+      j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+      f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', gtmId);
+    /* eslint-enable */
+
+    window.__gtm_loaded = true;
+    console.log(`[Tracking] GTM initialized: ${gtmId}`);
+  } else if (hasGtmScript) {
+    window.__gtm_loaded = true;
+  }
+
+  const gtmActive = isGtmActiveOnPage();
+
+  // --- A. Facebook / Meta Pixel Initialization (Fallback ONLY when GTM is NOT active) ---
+  // When GTM is active, GTM manages Meta Pixel base code + PageView; initializing here too causes duplicate PageView/Purchase.
+  if (fbPixelId && !gtmActive) {
+    window.__fb_initialized_pixel_ids = window.__fb_initialized_pixel_ids || new Set();
+    ensureStandardFbqStub(fbPixelId);
 
     // Initialize this pixel ID only if not already initialized on window
-    if (!window.__fb_initialized_pixel_ids.has(fbPixelId)) {
+    if (!window.__fb_initialized_pixel_ids.has(fbPixelId) && window.fbq) {
       try {
-        // Disable automatic button click & heuristic DOM scraping to eliminate duplicate phantom events
         window.fbq('set', 'autoConfig', false, fbPixelId);
         window.fbq('init', fbPixelId);
         window.__fb_initialized_pixel_ids.add(fbPixelId);
-        console.log(`[Tracking] Meta Pixel cleanly initialized: ${fbPixelId}`);
+        console.log(`[Tracking] Meta Pixel cleanly initialized (direct fallback): ${fbPixelId}`);
 
         // Initial PageView exactly once
         if (!window.__fb_initial_pageview_done) {
@@ -178,6 +196,8 @@ export function initTracking(siteSettings) {
         console.warn('[Tracking] Meta Pixel init notice:', err);
       }
     }
+  } else if (fbPixelId && gtmActive) {
+    console.log('[Tracking] GTM is active: skipping direct Meta Pixel init/PageView to prevent duplicate browser events.');
   }
 
   // --- B. TikTok Pixel Initialization ---
@@ -239,31 +259,6 @@ export function initTracking(siteSettings) {
     console.log(`[Tracking] TikTok Pixel initialized: ${tiktokPixelId}`);
   }
 
-  // --- C. Google Tag Manager Initialization ---
-  const hasGtmScript = typeof document !== 'undefined' && Boolean(
-    document.querySelector('script[src*="googletagmanager.com/gtm.js"]') || window.__gtm_loaded
-  );
-
-  if (gtmId && !hasGtmScript) {
-    /* eslint-disable */
-    (function (w, d, s, l, i) {
-      w[l] = w[l] || [];
-      w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
-      var f = d.getElementsByTagName(s)[0],
-        j = d.createElement(s),
-        dl = l != 'dataLayer' ? '&l=' + l : '';
-      j.async = true;
-      j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-      f.parentNode.insertBefore(j, f);
-    })(window, document, 'script', 'dataLayer', gtmId);
-    /* eslint-enable */
-
-    window.__gtm_loaded = true;
-    console.log(`[Tracking] GTM initialized: ${gtmId}`);
-  } else if (hasGtmScript) {
-    window.__gtm_loaded = true;
-  }
-
   // --- D. Google Analytics 4 (gtag) Initialization ---
   if (ga4Id && !window.__ga4_loaded) {
     const script = document.createElement('script');
@@ -280,13 +275,16 @@ export function initTracking(siteSettings) {
     console.log(`[Tracking] GA4 initialized: ${ga4Id}`);
   }
 
-  // Push standard initial PageView to dataLayer
-  window.dataLayer.push({
-    event: 'page_view',
-    page_title: document.title,
-    page_location: window.location.href,
-    page_path: window.location.pathname
-  });
+  // Push standard initial PageView to dataLayer STRICTLY ONCE per page load
+  if (!window.__dl_initial_pageview_done) {
+    window.__dl_initial_pageview_done = true;
+    window.dataLayer.push({
+      event: 'page_view',
+      page_title: document.title,
+      page_location: window.location.href,
+      page_path: window.location.pathname
+    });
+  }
 }
 
 // Track route/page view transition across SPAs
@@ -295,7 +293,7 @@ export function trackPageView(pageTitle) {
   if (window.ttq) {
     window.ttq.page();
   }
-  if (window.fbq) {
+  if (!isGtmActiveOnPage() && window.fbq) {
     window.fbq('track', 'PageView');
   }
   if (window.dataLayer) {
@@ -316,8 +314,8 @@ export function trackViewContent({ product, siteSettings }) {
   const title = product.title || product.package_name || 'খাঁটি খেজুরের গুড়';
   const prodId = String(product.id || 'kb-pack');
 
-  // 1. Meta Pixel
-  if (window.fbq) {
+  // 1. Meta Pixel (Fallback ONLY when GTM is NOT active; otherwise GTM handles view_item)
+  if (!isGtmActiveOnPage() && window.fbq) {
     window.fbq(
       'track',
       'ViewContent',
@@ -381,8 +379,8 @@ export function trackAddToCart({ product, quantity = 1, total, siteSettings }) {
   const prodId = String(product.id || 'kb-pack');
   const unitPrice = Number(product.price || (quantity > 0 ? val / quantity : val));
 
-  // 1. Meta Pixel
-  if (window.fbq) {
+  // 1. Meta Pixel (Fallback ONLY when GTM is NOT active; otherwise GTM handles add_to_cart)
+  if (!isGtmActiveOnPage() && window.fbq) {
     window.fbq(
       'track',
       'AddToCart',
@@ -475,8 +473,8 @@ export function trackInitiateCheckout({ product, quantity = 1, total, items = nu
   const contentIds = normalizedItems.map((it) => it.item_id);
   const summaryTitle = product?.title || normalizedItems.map((it) => it.item_name).join(' + ');
 
-  // 1. Meta Pixel
-  if (window.fbq) {
+  // 1. Meta Pixel (Fallback ONLY when GTM is NOT active; otherwise GTM handles begin_checkout)
+  if (!isGtmActiveOnPage() && window.fbq) {
     try {
       window.fbq(
         'track',
@@ -592,10 +590,7 @@ export async function trackPurchase({ order, siteSettings }) {
   }
 
   // Check if GTM is loaded & active on page
-  const isGtmActive = typeof window !== 'undefined' && Boolean(
-    (window.google_tag_manager && (window.google_tag_manager['GTM-MKND7838'] || Object.keys(window.google_tag_manager).length > 0)) ||
-    window.__gtm_loaded
-  );
+  const isGtmActive = isGtmActiveOnPage();
 
   const fbPayload = {
     content_name: pkgName,
@@ -608,27 +603,19 @@ export async function trackPurchase({ order, siteSettings }) {
   };
 
   // --- 1. Browser Meta Pixel ---
-  // When GTM is active, GTM container (Tag 30) fires the official Meta Pixel Purchase event for 1033673513094948
+  // When GTM is active, GTM container fires the single official browser Meta Pixel Purchase event
   // upon receiving the dataLayer 'purchase' event below.
-  // We ONLY call direct window.fbq('track', 'Purchase') if GTM is NOT active (e.g. adblocker, fallback mode),
-  // OR if a distinct custom fb_pixel_id is configured in siteSettings.
-  const customPixelId = siteSettings?.fb_pixel_id?.trim();
-  if (customPixelId && customPixelId !== '1033673513094948' && window.fbq) {
-    try {
-      window.fbq('trackSingle', customPixelId, 'Purchase', fbPayload, { eventID: eventId });
-      console.log(`[Tracking] Meta Custom Pixel Purchase tracked (${customPixelId}):`, eventId);
-    } catch (err) {
-      console.warn('[Tracking] Meta Custom Pixel Purchase track error:', err);
-    }
-  } else if (!isGtmActive && window.fbq) {
+  // Never fire direct window.fbq('track' / 'trackSingle') while GTM is active, or Facebook Events Manager
+  // receives duplicate browser-side Purchase events.
+  if (!isGtmActive && window.fbq) {
     try {
       window.fbq('track', 'Purchase', fbPayload, { eventID: eventId });
-      console.log(`[Tracking] Meta Direct Browser Pixel Purchase tracked successfully (${eventId}).`);
+      console.log(`[Tracking] Meta Direct Browser Pixel Purchase tracked (GTM fallback): ${eventId}`);
     } catch (err) {
       console.warn('[Tracking] Meta Direct Browser Pixel Purchase track error:', err);
     }
-  } else {
-    console.log(`[Tracking] GTM is active: Purchase event will be dispatched cleanly via dataLayer Tag 30 (${eventId}).`);
+  } else if (isGtmActive) {
+    console.log(`[Tracking] GTM is active: Purchase event will be dispatched once via dataLayer (${eventId}).`);
   }
 
   // --- 2. TikTok Pixel (Advanced Matching + PlaceAnOrder + CompletePayment) ---
@@ -679,6 +666,7 @@ export async function trackPurchase({ order, siteSettings }) {
       window.dataLayer.push({ ecommerce: null }); // Clear previous ecommerce object
       window.dataLayer.push({
         event: 'purchase',
+        event_id: eventId,
         ecommerce: {
           transaction_id: eventId,
           value: totalVal,
